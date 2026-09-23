@@ -10,7 +10,7 @@ Requirements: Frappe, ERPNext and HRMS on the `version-16` branch; Python 3.14; 
 
 ```bash
 cd ~/frappe-bench
-bench get-app https://github.com/<you>/reno_order --branch main
+bench get-app https://github.com/kareem1288/reno-order --branch version-16
 bench --site <site> install-app reno_order     # roles, doctypes, fixtures (custom fields), patches
 bench --site <site> migrate                     # also on every upgrade
 ```
@@ -69,7 +69,7 @@ bench --site <site> set-config allow_tests true
 bench --site <site> run-tests --app reno_order
 ```
 
-There are 110 integration tests. Test data is created inside the test transaction and rolled back; the ERPNext global test records are not generated. The tests need one Company to exist, as it does after the setup wizard. CI (`.github/workflows/ci.yml`) runs lint, then builds a bench, creates a fresh site and runs the suite.
+There are 110 integration tests. Test data is created inside the test transaction and rolled back; the ERPNext global test records are not generated. The tests need one Company to exist, as it does after the setup wizard. The CI pipeline (`docs/ci/github-actions-ci.yml`) runs lint, then builds a bench, creates a fresh site and runs the suite.
 
 **Required cases (Part 15), and where they are tested:**
 
@@ -104,7 +104,7 @@ Scripts:
 
 ## Known limitations
 
-- **CI has not run yet.** The workflow is written and its YAML validated, but it has not run on GitHub.
+- **CI is not active in this repository.** The GitHub Actions pipeline is included as `docs/ci/github-actions-ci.yml` (YAML validated). It is kept outside `.github/workflows/` because pushing workflow files needs a token with the `workflow` scope. To enable it, move it to `.github/workflows/ci.yml`. It has not run on GitHub yet.
 - **Manufacturing is shown up to Work Order and Job Cards.** The two manufacturing Stock Entries are standard ERPNext and are described, not automated.
 - **The Sales Invoice is made manually** from the Delivery Note (standard ERPNext). Auto-invoicing on *Closed* would be a small addition.
 - **Existing wrong leave allocations are not recalculated** by the HRMS fix; correct them by amending.

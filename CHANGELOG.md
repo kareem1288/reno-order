@@ -27,7 +27,7 @@ All notable changes to this app. The format follows [Keep a Changelog](https://k
 - Patch `v1_0.backfill_order_type`: batched, idempotent backfill of Order Type.
 - HRMS: **Fixed Entitlement (No Proration)** on Leave Type, so event-based leave is allocated in full to mid-year joiners.
 - Custom fields on core doctypes, shipped as fixtures.
-- CI workflow (lint, then tests on a fresh v16 site); docs for architecture, performance, HRMS debugging and operations.
+- CI pipeline definition in `docs/ci/` (lint, then tests on a fresh v16 site); docs for architecture, performance, HRMS debugging and operations.
 
 ### Fixed
 - The cancel check could report an empty Datetime field as changed, because casting an empty Datetime returns "now".

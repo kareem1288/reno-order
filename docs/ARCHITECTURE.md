@@ -169,7 +169,7 @@ See [HRMS_LEAVE_PRORATION.md](HRMS_LEAVE_PRORATION.md).
 
 ## 11. CI/CD, promotion and rollback (Part 17)
 
-- **CI:** `.github/workflows/ci.yml` runs lint (ruff check and format), then builds a bench (Frappe, ERPNext and HRMS `version-16`), creates a fresh site, installs the app (which exercises the fixtures, roles and patches), runs the setup wizard, runs all tests with coverage, and migrates twice to prove idempotency.
+- **CI:** the GitHub Actions pipeline in `docs/ci/github-actions-ci.yml` (move it to `.github/workflows/ci.yml` to enable it) runs lint (ruff check and format), then builds a bench (Frappe, ERPNext and HRMS `version-16`), creates a fresh site, installs the app (which exercises the fixtures, roles and patches), runs the setup wizard, runs all tests with coverage, and migrates twice to prove idempotency.
 - **Promotion:**
   - `develop` → staging: automatic deploy after CI passes.
   - `main` → production: a protected branch with a required review, deployed from an **immutable tag** (`v1.2.0`), with a manual approval gate (a GitHub Environment with required reviewers).
