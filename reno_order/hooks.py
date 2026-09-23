@@ -8,7 +8,7 @@ app_license = "mit"
 # Apps
 # ------------------
 
-# required_apps = []
+required_apps = ["erpnext"]
 
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
@@ -44,6 +44,7 @@ app_license = "mit"
 
 # include js in doctype views
 # doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {"Sales Order": "public/js/sales_order.js"}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -85,8 +86,12 @@ app_license = "mit"
 # Installation
 # ------------
 
-# before_install = "reno_order.install.before_install"
-# after_install = "reno_order.install.after_install"
+before_install = "reno_order.api.v1.setup.install.before_install"
+before_migrate = "reno_order.api.v1.setup.install.before_migrate"
+
+fixtures = [
+	{"dt": "Custom Field", "filters": [["module", "=", "Reno Order"]]},
+]
 
 # Uninstallation
 # ------------
@@ -126,46 +131,45 @@ app_license = "mit"
 # -----------
 # Permissions evaluated in scripted ways
 
-# permission_query_conditions = {
-# 	"Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
-# }
-#
-# has_permission = {
-# 	"Event": "frappe.desk.doctype.event.event.has_permission",
-# }
+permission_query_conditions = {
+	"Reno Order": "reno_order.api.v1.permissions.get_permission_query_conditions",
+}
+
+has_permission = {
+	"Reno Order": "reno_order.api.v1.permissions.has_permission",
+}
 
 # Document Events
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Sales Order": {
+		"validate": "reno_order.api.v1.sales_order.validate_reno_order_link",
+		"on_update": "reno_order.api.v1.sales_order.link_reno_order",
+		"on_cancel": "reno_order.api.v1.sales_order.unlink_reno_order",
+		"on_trash": "reno_order.api.v1.sales_order.unlink_reno_order",
+	},
+	"Leave Type": {
+		"validate": "reno_order.api.v1.leave_policy_assignment.validate_leave_type",
+	},
+	"Delivery Note": {
+		"on_update": "reno_order.api.v1.delivery_note.link_reno_order",
+		"on_cancel": "reno_order.api.v1.delivery_note.unlink_reno_order",
+		"on_trash": "reno_order.api.v1.delivery_note.unlink_reno_order",
+	},
+}
 
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"reno_order.tasks.all"
-# 	],
-# 	"daily": [
-# 		"reno_order.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"reno_order.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"reno_order.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"reno_order.tasks.monthly"
-# 	],
-# }
+scheduler_events = {
+	"daily": ["reno_order.api.v1.lifecycle.flag_overdue_installations"],
+	"hourly": ["reno_order.api.v1.delivery_note.retry_failed_delivery_notes"],
+	"cron": {
+		"*/5 * * * *": ["reno_order.api.v1.logistics.retry_due_bookings"],
+	},
+}
 
 # Testing
 # -------
@@ -176,9 +180,11 @@ app_license = "mit"
 # ------------------------------
 #
 # Specify custom mixins to extend the standard doctype controller.
-# extend_doctype_class = {
-# 	"Task": "reno_order.custom.task.CustomTaskMixin"
-# }
+extend_doctype_class = {
+	"Leave Policy Assignment": [
+		"reno_order.api.v1.leave_policy_assignment.FixedEntitlementLeavePolicyAssignment"
+	],
+}
 
 # Overriding Methods
 # ------------------------------
