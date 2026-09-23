@@ -1,0 +1,111 @@
+# Reference copy of the CI pipeline (Part 17). GitHub runs workflows only from
+# .github/workflows/: move this file to .github/workflows/ci.yml to enable it
+# (pushing it needs a token with the `workflow` scope).
+name: CI
+
+# Code push -> build/setup -> test -> result (Part 17).
+# Promotion to staging / production and rollback are described in docs/ARCHITECTURE.md.
+
+on:
+  push:
+    branches: [version-16, main, develop]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+      - name: Ruff (lint + format check)
+        run: |
+          pip install ruff
+          ruff check reno_order scripts
+          ruff format --check reno_order scripts
+
+  tests:
+    name: Server tests
+    needs: lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    services:
+      redis-cache:
+        image: redis:alpine
+        ports: ["13000:6379"]
+      redis-queue:
+        image: redis:alpine
+        ports: ["11000:6379"]
+      mariadb:
+        image: mariadb:11.8
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        ports: ["3306:3306"]
+        options: --health-cmd="mariadb-admin ping" --health-interval=5s --health-timeout=2s --health-retries=5
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: ${{ runner.os }}-pip-
+
+      - name: Install MariaDB client
+        run: sudo apt-get update && sudo apt-get install -y mariadb-client
+
+      - name: Build bench (Frappe, ERPNext, HRMS v16)
+        run: |
+          pip install frappe-bench
+          bench init --skip-redis-config-generation --skip-assets --frappe-branch version-16 \
+            --python "$(which python)" ~/frappe-bench
+          cd ~/frappe-bench
+          bench get-app --skip-assets --branch version-16 erpnext
+          bench get-app --skip-assets --branch version-16 hrms
+          bench get-app --skip-assets reno_order "$GITHUB_WORKSPACE"
+          bench setup requirements --dev
+        env:
+          CI: "Yes"
+
+      - name: Create test site
+        working-directory: /home/runner/frappe-bench
+        run: |
+          bench new-site --db-root-password root --admin-password admin test_site
+          bench --site test_site install-app erpnext hrms reno_order
+          bench --site test_site set-config allow_tests true
+          # ERPNext tests need a company; reno_order's tests use the site's default one.
+          bench --site test_site execute frappe.desk.page.setup_wizard.setup_wizard.setup_complete \
+            --kwargs "{'args': {'company_name': 'Reno CI Ltd', 'company_abbr': 'RCI', 'country': 'India', 'currency': 'INR', 'timezone': 'Asia/Kolkata', 'language': 'English', 'chart_of_accounts': 'Standard', 'fy_start_date': '2026-04-01', 'fy_end_date': '2027-03-31'}}"
+        env:
+          CI: "Yes"
+
+      - name: Run tests
+        working-directory: /home/runner/frappe-bench
+        run: bench --site test_site run-tests --app reno_order --coverage
+
+      - name: Migrate twice (fixtures + patches are idempotent)
+        working-directory: /home/runner/frappe-bench
+        run: |
+          bench --site test_site migrate
+          bench --site test_site migrate
