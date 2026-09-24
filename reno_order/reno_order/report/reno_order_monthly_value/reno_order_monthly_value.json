@@ -1,0 +1,27 @@
+{
+ "add_total_row": 1,
+ "columns": [],
+ "creation": "2026-09-23 16:00:00.000000",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": null,
+ "modified": "2026-09-23 16:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Reno Order",
+ "name": "Reno Order Monthly Value",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "Reno Order",
+ "report_name": "Reno Order Monthly Value",
+ "report_type": "Script Report",
+ "roles": [
+  {"role": "Sales Manager"},
+  {"role": "Accounts User"},
+  {"role": "System Manager"}
+ ],
+ "timeout": 0
+}

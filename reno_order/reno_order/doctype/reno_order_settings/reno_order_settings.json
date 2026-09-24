@@ -1,0 +1,62 @@
+{
+ "actions": [],
+ "creation": "2026-09-23 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "discount_section",
+  "discount_approval_threshold",
+  "discount_approver_role"
+ ],
+ "fields": [
+  {
+   "fieldname": "discount_section",
+   "fieldtype": "Section Break",
+   "label": "Discount Approval"
+  },
+  {
+   "default": "10",
+   "description": "Reno Orders with a discount above this percentage can only be submitted by a user with the approver role.",
+   "fieldname": "discount_approval_threshold",
+   "fieldtype": "Percent",
+   "label": "Discount Approval Threshold (%)",
+   "non_negative": 1
+  },
+  {
+   "default": "Sales Manager",
+   "fieldname": "discount_approver_role",
+   "fieldtype": "Link",
+   "label": "Discount Approver Role",
+   "options": "Role",
+   "reqd": 1
+  }
+ ],
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-09-23 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Reno Order",
+ "name": "Reno Order Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "read": 1,
+   "role": "System Manager",
+   "write": 1
+  },
+  {
+   "create": 1,
+   "read": 1,
+   "role": "Sales Manager",
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Sales User"
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

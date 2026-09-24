@@ -1,0 +1,523 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "naming_series:",
+ "creation": "2026-09-23 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "customer_section",
+  "naming_series",
+  "customer",
+  "customer_name",
+  "customer_address",
+  "contact_person",
+  "column_break_dates",
+  "transaction_date",
+  "expected_installation_date",
+  "order_type",
+  "status",
+  "column_break_company",
+  "company",
+  "currency",
+  "sales_person",
+  "project",
+  "items_section",
+  "items",
+  "totals_section",
+  "total_amount",
+  "discount_percentage",
+  "column_break_totals",
+  "discount_amount",
+  "grand_total",
+  "installation_section",
+  "site_supervisor",
+  "installed_on",
+  "column_break_installation",
+  "is_overdue",
+  "installation_remarks",
+  "logistics_section",
+  "logistics_status",
+  "logistics_booking_id",
+  "column_break_logistics",
+  "logistics_attempts",
+  "logistics_next_retry",
+  "logistics_error",
+  "references_section",
+  "sales_order",
+  "delivery_note",
+  "downstream_status",
+  "downstream_attempts",
+  "downstream_error",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "customer_section",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "RO-.#####",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Series",
+   "no_copy": 1,
+   "options": "RO-.#####",
+   "print_hide": 1,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer",
+   "options": "Customer",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fetch_from": "customer.customer_name",
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "label": "Customer Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "customer_address",
+   "fieldtype": "Link",
+   "label": "Customer Address",
+   "options": "Address"
+  },
+  {
+   "fieldname": "contact_person",
+   "fieldtype": "Link",
+   "label": "Contact Person",
+   "options": "Contact"
+  },
+  {
+   "fieldname": "column_break_dates",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "transaction_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Transaction Date",
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "expected_installation_date",
+   "fieldtype": "Date",
+   "label": "Expected Installation Date",
+   "reqd": 1
+  },
+  {
+   "default": "Standard",
+   "fieldname": "order_type",
+   "fieldtype": "Select",
+   "label": "Order Type",
+   "options": "Standard\nCustom\nPremium",
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "Draft",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "no_copy": 1,
+   "options": "Draft\nConfirmed\nIn Production\nReady for Installation\nInstalled\nClosed\nCancelled",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_company",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "remember_last_selected_value": 1,
+   "reqd": 1
+  },
+  {
+   "fetch_from": "company.default_currency",
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sales_person",
+   "fieldtype": "Link",
+   "label": "Sales Person",
+   "options": "Sales Person"
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "Project"
+  },
+  {
+   "fieldname": "items_section",
+   "fieldtype": "Section Break",
+   "label": "Items"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Order Items",
+   "options": "Reno Order Item",
+   "reqd": 1
+  },
+  {
+   "fieldname": "totals_section",
+   "fieldtype": "Section Break",
+   "label": "Totals"
+  },
+  {
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "label": "Total Amount",
+   "options": "currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "discount_percentage",
+   "fieldtype": "Percent",
+   "label": "Discount %",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "column_break_totals",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "discount_amount",
+   "fieldtype": "Currency",
+   "label": "Discount Amount",
+   "options": "currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "grand_total",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Grand Total",
+   "options": "currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "installation_section",
+   "fieldtype": "Section Break",
+   "label": "Installation"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "site_supervisor",
+   "fieldtype": "Link",
+   "label": "Site Supervisor",
+   "options": "User",
+   "in_standard_filter": 1,
+   "search_index": 1,
+   "description": "The supervisor who installs this order. They see only orders assigned to them."
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "installed_on",
+   "fieldtype": "Datetime",
+   "label": "Installed On",
+   "no_copy": 1,
+   "read_only": 1,
+   "depends_on": "installed_on"
+  },
+  {
+   "fieldname": "column_break_installation",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "is_overdue",
+   "fieldtype": "Check",
+   "label": "Installation Overdue",
+   "no_copy": 1,
+   "read_only": 1,
+   "in_standard_filter": 1,
+   "search_index": 1,
+   "depends_on": "eval:doc.docstatus==1"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "installation_remarks",
+   "fieldtype": "Small Text",
+   "label": "Installation Remarks",
+   "no_copy": 1
+  },
+  {
+   "collapsible": 1,
+   "depends_on": "logistics_status",
+   "fieldname": "logistics_section",
+   "fieldtype": "Section Break",
+   "label": "Logistics"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "logistics_status",
+   "fieldtype": "Select",
+   "label": "Logistics Status",
+   "no_copy": 1,
+   "options": "\nQueued\nBooked\nDispatched\nDelivered\nFailed",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "logistics_booking_id",
+   "fieldtype": "Data",
+   "label": "Logistics Booking ID",
+   "no_copy": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_logistics",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "logistics_attempts",
+   "fieldtype": "Int",
+   "label": "Booking Attempts",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "logistics_next_retry",
+   "fieldtype": "Datetime",
+   "label": "Next Booking Retry",
+   "no_copy": 1,
+   "read_only": 1,
+   "depends_on": "logistics_next_retry"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "logistics_error",
+   "fieldtype": "Small Text",
+   "label": "Logistics Error",
+   "no_copy": 1,
+   "read_only": 1,
+   "depends_on": "logistics_error"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "references_section",
+   "fieldtype": "Section Break",
+   "label": "References"
+  },
+  {
+   "fieldname": "sales_order",
+   "fieldtype": "Link",
+   "label": "Sales Order",
+   "no_copy": 1,
+   "options": "Sales Order",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "delivery_note",
+   "fieldtype": "Link",
+   "label": "Delivery Note",
+   "no_copy": 1,
+   "options": "Delivery Note",
+   "read_only": 1,
+   "depends_on": "delivery_note"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "downstream_status",
+   "fieldtype": "Select",
+   "label": "Delivery Note Status",
+   "no_copy": 1,
+   "options": "\nQueued\nCreated\nFailed",
+   "read_only": 1,
+   "depends_on": "downstream_status"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "downstream_attempts",
+   "fieldtype": "Int",
+   "label": "Delivery Note Attempts",
+   "no_copy": 1,
+   "read_only": 1,
+   "depends_on": "eval:doc.downstream_status=='Failed'"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "downstream_error",
+   "fieldtype": "Small Text",
+   "label": "Delivery Note Error",
+   "no_copy": 1,
+   "read_only": 1,
+   "depends_on": "downstream_error"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Reno Order",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  }
+ ],
+ "is_submittable": 1,
+ "links": [
+  {
+   "group": "Selling",
+   "link_doctype": "Sales Order",
+   "link_fieldname": "reno_order"
+  },
+  {
+   "group": "Selling",
+   "link_doctype": "Delivery Note",
+   "link_fieldname": "reno_order"
+  },
+  {
+   "group": "Selling",
+   "link_doctype": "Sales Invoice",
+   "link_fieldname": "reno_order"
+  },
+  {
+   "group": "Manufacturing",
+   "link_doctype": "Work Order",
+   "link_fieldname": "reno_order"
+  },
+  {
+   "group": "Buying",
+   "link_doctype": "Material Request",
+   "link_fieldname": "reno_order"
+  },
+  {
+   "group": "Buying",
+   "link_doctype": "Request for Quotation",
+   "link_fieldname": "reno_order"
+  },
+  {
+   "group": "Buying",
+   "link_doctype": "Supplier Quotation",
+   "link_fieldname": "reno_order"
+  },
+  {
+   "group": "Buying",
+   "link_doctype": "Purchase Order",
+   "link_fieldname": "reno_order"
+  },
+  {
+   "group": "Buying",
+   "link_doctype": "Purchase Receipt",
+   "link_fieldname": "reno_order"
+  },
+  {
+   "group": "Buying",
+   "link_doctype": "Purchase Invoice",
+   "link_fieldname": "reno_order"
+  }
+ ],
+ "modified": "2026-09-23 17:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Reno Order",
+ "name": "Reno Order",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "create": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales User",
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "role": "Production User",
+   "read": 1,
+   "write": 1,
+   "report": 1,
+   "print": 1,
+   "submit": 1
+  },
+  {
+   "role": "Site Supervisor",
+   "read": 1,
+   "write": 1,
+   "print": 1,
+   "submit": 1
+  },
+  {
+   "role": "Accounts User",
+   "read": 1,
+   "report": 1,
+   "print": 1,
+   "export": 1,
+   "write": 1,
+   "submit": 1
+  }
+ ],
+ "search_fields": "customer_name,status",
+ "show_title_field_in_link": 0,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "customer_name",
+ "track_changes": 1
+}

@@ -1,0 +1,264 @@
+app_name = "reno_order"
+app_title = "Reno Order"
+app_publisher = "Shaik Khaja Kareem"
+app_description = "Kitchen Renovation Platform"
+app_email = "skkareem498@gmail.com"
+app_license = "mit"
+
+# Apps
+# ------------------
+
+required_apps = ["erpnext"]
+
+# Each item in the list will be shown as an app in the apps page
+# add_to_apps_screen = [
+# 	{
+# 		"name": "reno_order",
+# 		"logo": "/assets/reno_order/logo.png",
+# 		"title": "Reno Order",
+# 		"route": "/reno_order",
+# 		"has_permission": "reno_order.api.permission.has_app_permission"
+# 	}
+# ]
+
+# Includes in <head>
+# ------------------
+
+# include js, css files in header of desk.html
+# app_include_css = "/assets/reno_order/css/reno_order.css"
+# app_include_js = "/assets/reno_order/js/reno_order.js"
+
+# include js, css files in header of web template
+# web_include_css = "/assets/reno_order/css/reno_order.css"
+# web_include_js = "/assets/reno_order/js/reno_order.js"
+
+# include custom scss in every website theme (without file extension ".scss")
+# website_theme_scss = "reno_order/public/scss/website"
+
+# include js, css files in header of web form
+# webform_include_js = {"doctype": "public/js/doctype.js"}
+# webform_include_css = {"doctype": "public/css/doctype.css"}
+
+# include js in page
+# page_js = {"page" : "public/js/file.js"}
+
+# include js in doctype views
+# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {"Sales Order": "public/js/sales_order.js"}
+# doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
+# doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
+# doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
+
+# Svg Icons
+# ------------------
+# include app icons in desk
+# app_include_icons = "reno_order/public/icons.svg"
+
+# Home Pages
+# ----------
+
+# application home page (will override Website Settings)
+# home_page = "login"
+
+# website user home page (by Role)
+# role_home_page = {
+# 	"Role": "home_page"
+# }
+
+# Generators
+# ----------
+
+# automatically create page for each record of this doctype
+# website_generators = ["Web Page"]
+
+# automatically load and sync documents of this doctype from downstream apps
+# importable_doctypes = [doctype_1]
+
+# Jinja
+# ----------
+
+# add methods and filters to jinja environment
+# jinja = {
+# 	"methods": "reno_order.utils.jinja_methods",
+# 	"filters": "reno_order.utils.jinja_filters"
+# }
+
+# Installation
+# ------------
+
+before_install = "reno_order.api.v1.setup.install.before_install"
+before_migrate = "reno_order.api.v1.setup.install.before_migrate"
+
+fixtures = [
+	{"dt": "Custom Field", "filters": [["module", "=", "Reno Order"]]},
+]
+
+# Uninstallation
+# ------------
+
+# before_uninstall = "reno_order.uninstall.before_uninstall"
+# after_uninstall = "reno_order.uninstall.after_uninstall"
+
+# Integration Setup
+# ------------------
+# To set up dependencies/integrations with other apps
+# Name of the app being installed is passed as an argument
+
+# before_app_install = "reno_order.utils.before_app_install"
+# after_app_install = "reno_order.utils.after_app_install"
+
+# Integration Cleanup
+# -------------------
+# To clean up dependencies/integrations with other apps
+# Name of the app being uninstalled is passed as an argument
+
+# before_app_uninstall = "reno_order.utils.before_app_uninstall"
+# after_app_uninstall = "reno_order.utils.after_app_uninstall"
+
+# Build
+# ------------------
+# To hook into the build process
+
+# after_build = "reno_order.build.after_build"
+
+# Desk Notifications
+# ------------------
+# See frappe.core.notifications.get_notification_config
+
+# notification_config = "reno_order.notifications.get_notification_config"
+
+# Permissions
+# -----------
+# Permissions evaluated in scripted ways
+
+permission_query_conditions = {
+	"Reno Order": "reno_order.api.v1.permissions.get_permission_query_conditions",
+}
+
+has_permission = {
+	"Reno Order": "reno_order.api.v1.permissions.has_permission",
+}
+
+# Document Events
+# ---------------
+# Hook on document methods and events
+
+doc_events = {
+	"Sales Order": {
+		"validate": "reno_order.api.v1.sales_order.validate_reno_order_link",
+		"on_update": "reno_order.api.v1.sales_order.link_reno_order",
+		"on_cancel": "reno_order.api.v1.sales_order.unlink_reno_order",
+		"on_trash": "reno_order.api.v1.sales_order.unlink_reno_order",
+	},
+	"Leave Type": {
+		"validate": "reno_order.api.v1.leave_policy_assignment.validate_leave_type",
+	},
+	"Delivery Note": {
+		"on_update": "reno_order.api.v1.delivery_note.link_reno_order",
+		"on_cancel": "reno_order.api.v1.delivery_note.unlink_reno_order",
+		"on_trash": "reno_order.api.v1.delivery_note.unlink_reno_order",
+	},
+}
+
+# Scheduled Tasks
+# ---------------
+
+scheduler_events = {
+	"daily": ["reno_order.api.v1.lifecycle.flag_overdue_installations"],
+	"hourly": ["reno_order.api.v1.delivery_note.retry_failed_delivery_notes"],
+	"cron": {
+		"*/5 * * * *": ["reno_order.api.v1.logistics.retry_due_bookings"],
+	},
+}
+
+# Testing
+# -------
+
+# before_tests = "reno_order.install.before_tests"
+
+# Extend DocType Class
+# ------------------------------
+#
+# Specify custom mixins to extend the standard doctype controller.
+extend_doctype_class = {
+	"Leave Policy Assignment": [
+		"reno_order.api.v1.leave_policy_assignment.FixedEntitlementLeavePolicyAssignment"
+	],
+}
+
+# Overriding Methods
+# ------------------------------
+#
+# override_whitelisted_methods = {
+# 	"frappe.desk.doctype.event.event.get_events": "reno_order.event.get_events"
+# }
+#
+# each overriding function accepts a `data` argument;
+# generated from the base implementation of the doctype dashboard,
+# along with any modifications made in other Frappe apps
+# override_doctype_dashboards = {
+# 	"Task": "reno_order.task.get_dashboard_data"
+# }
+
+# exempt linked doctypes from being automatically cancelled
+#
+# auto_cancel_exempted_doctypes = ["Auto Repeat"]
+
+# Ignore links to specified DocTypes when deleting documents
+# -----------------------------------------------------------
+
+# ignore_links_on_delete = ["Communication", "ToDo"]
+
+# Request Events
+# ----------------
+# before_request = ["reno_order.utils.before_request"]
+# after_request = ["reno_order.utils.after_request"]
+
+# Job Events
+# ----------
+# before_job = ["reno_order.utils.before_job"]
+# after_job = ["reno_order.utils.after_job"]
+
+# User Data Protection
+# --------------------
+
+# user_data_fields = [
+# 	{
+# 		"doctype": "{doctype_1}",
+# 		"filter_by": "{filter_by}",
+# 		"redact_fields": ["{field_1}", "{field_2}"],
+# 		"partial": 1,
+# 	},
+# 	{
+# 		"doctype": "{doctype_2}",
+# 		"filter_by": "{filter_by}",
+# 		"partial": 1,
+# 	},
+# 	{
+# 		"doctype": "{doctype_3}",
+# 		"strict": False,
+# 	},
+# 	{
+# 		"doctype": "{doctype_4}"
+# 	}
+# ]
+
+# Authentication and authorization
+# --------------------------------
+
+# auth_hooks = [
+# 	"reno_order.auth.validate"
+# ]
+
+# Automatically update python controller files with type annotations for this app.
+# export_python_type_annotations = True
+
+# default_log_clearing_doctypes = {
+# 	"Logging DocType Name": 30  # days to retain logs
+# }
+
+# Translation
+# ------------
+# List of apps whose translatable strings should be excluded from this app's translations.
+# ignore_translatable_strings_from = []
+
